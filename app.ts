@@ -33,6 +33,14 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 connectToDB();
 
+app.get("/", (req: Request, res: Response) => {
+  res
+    .status(200)
+    .send(
+      'Welcome to DAZN Movies API. Documentation is available <a href="./api-docs/">here</a>.'
+    );
+});
+
 app.use("/movies", movieRouter);
 
 app.get<{}, any, any>(
