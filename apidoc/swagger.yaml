@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: IRIS Swagger - OpenAPI 3.0
+  version: 0.0.1
+servers:
+  - url: /
+tags:
+  - name: Wheather
+    description: Wheather predtion apis
+paths:
+  /predict-wheather:
+    get:
+      tags:
+        - Wheather
+      summary: Wheather prediction
+      description: Wheather prediction with city
+      operationId: predictWheather
+      parameters:
+        - in: query
+          name: city
+          schema:
+            type: string
+            example: "London"
+          required: true
+      responses:
+        "200":
+          description: Wheather prediction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseWheather"
+
+components:
+  schemas:
+    RequestWheather:
+      type: object
+      properties:
+        city:
+          type: string
+          example: "London"
+
+    ResponseWheather:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Password changed succesfully"
+        empType:
+          type: string
+          example: "Sub-broker"
