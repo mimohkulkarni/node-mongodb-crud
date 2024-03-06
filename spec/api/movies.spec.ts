@@ -2,7 +2,7 @@ import supertest from "supertest";
 import { startDBServer, stopDBServer } from "../utils/server";
 import app from "../../app";
 
-describe("Signup for individual employees", () => {
+describe("Movies API", () => {
   const request = supertest(app);
   beforeAll(async () => {
     await startDBServer();
