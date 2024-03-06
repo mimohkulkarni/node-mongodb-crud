@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import APIError from "../api-error";
 import { Movie } from "../model";
 
@@ -30,6 +31,9 @@ export const searchMovie = async ({ query }: { query: string }) => {
 
 export const addMovie = async ({ title, genre, year, streamingLink }) => {
   try {
+    if (!title || !genre || !year || !streamingLink) {
+      throw new APIError("Invalid data", "INVALID_DATA", 400);
+    }
     const movie = new Movie({
       title,
       genre,
@@ -57,6 +61,14 @@ export const updateMovie = async ({
   year: number;
   streamingLink: string;
 }) => {
+  if (!id || !title || !genre || !year || !streamingLink) {
+    throw new APIError("Invalid data", "INVALID_DATA", 400);
+  }
+
+  if (!isValidObjectId(id)) {
+    throw new APIError("Invalid id", "INVALID_DATA", 400);
+  }
+
   const movie = await Movie.findById(id);
   if (!movie) {
     throw new APIError("Movie not found", "INVALID_DATA", 400);

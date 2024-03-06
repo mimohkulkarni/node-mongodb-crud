@@ -192,4 +192,66 @@ describe("Signup for individual employees", () => {
     expect(body.length).toBe(1);
     expect(body[0].title).toBe("Mimoh");
   });
+
+  it("Should throw error if create a movie for invalid data", async () => {
+    const { status: adminStatus, body: adminBody } = await request.get(
+      "/get-admin-token"
+    );
+
+    expect(adminStatus).toBe(200);
+    const token = adminBody.token;
+
+    const { status, body } = await request
+      .post("/movies")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        genre: "Comedy",
+        year: 2024,
+        streamingLink: "google.com",
+      });
+
+    expect(status).toBe(400);
+    expect(body.message).toBe("Invalid data");
+  });
+
+  it("Should throw error if movie not found for update", async () => {
+    const { status: adminStatus, body: adminBody } = await request.get(
+      "/get-admin-token"
+    );
+
+    expect(adminStatus).toBe(200);
+    const token = adminBody.token;
+
+    const { status: status1, body: body1 } = await request
+      .post("/movies")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        title: "Mimoh",
+        genre: "Comedy",
+        year: 2024,
+        streamingLink: "google.com",
+      });
+
+    expect(status1).toBe(201);
+
+    const { status: status2, body: body2 } = await request
+      .delete(`/movies/${body1._id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(status2).toBe(200);
+    expect(body2.message).toBe("Movie deleted successfully");
+
+    const { status, body } = await request
+      .put(`/movies/${body1._id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        title: "Mimoh1",
+        genre: "Comedy1",
+        year: 2023,
+        streamingLink: "google1.com",
+      });
+
+    expect(status).toBe(400);
+    expect(body.message).toBe("Movie not found");
+  });
 });
